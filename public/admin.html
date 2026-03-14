@@ -212,7 +212,7 @@ tr:hover td{background:rgba(255,255,255,.02)}
     <div class="view" id="ordersView">
       <div class="section-header"><h2>Orders</h2></div>
       <div class="table-wrap">
-        <table><thead><tr><th>ID</th><th>Customer</th><th>Email</th><th>Total</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead>
+        <table><thead><tr><th>ID</th><th>Customer</th><th>Total</th><th>Payment</th><th>Delivery</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead>
         <tbody id="ordersTable"><tr><td colspan="7" style="text-align:center;color:var(--text-muted);padding:30px">Loading...</td></tr></tbody></table>
       </div>
     </div>
@@ -250,6 +250,28 @@ tr:hover td{background:rgba(255,255,255,.02)}
           <div class="field"><label>Age Verification</label>
             <select id="setAgeVerify"><option value="true">Enabled</option><option value="false">Disabled</option></select>
           </div>
+        </div>
+      </div>
+      <div class="panel">
+        <h3>Crypto Wallets</h3>
+        <div class="form-grid">
+          <div class="field full"><label>Bitcoin (BTC) Wallet Address</label><input type="text" id="setWalletBtc" placeholder="bc1q... or 1A1z..."></div>
+          <div class="field full"><label>Monero (XMR) Wallet Address</label><input type="text" id="setWalletXmr" placeholder="4..."></div>
+          <div class="field"><label>Crypto Payments</label>
+            <select id="setCryptoEnabled"><option value="true">Enabled</option><option value="false">Disabled</option></select>
+          </div>
+          <div class="field"><label>Cash Payments</label>
+            <select id="setCashEnabled"><option value="true">Enabled</option><option value="false">Disabled</option></select>
+          </div>
+        </div>
+      </div>
+      <div class="panel">
+        <h3>NYC Delivery</h3>
+        <div class="form-grid">
+          <div class="field"><label>Local Delivery</label>
+            <select id="setDeliveryEnabled"><option value="true">Enabled</option><option value="false">Disabled</option></select>
+          </div>
+          <div class="field full"><label>Delivery Boroughs (comma-separated)</label><input type="text" id="setDeliveryBoroughs" placeholder="Manhattan,Brooklyn,Queens,Bronx,Staten Island"></div>
         </div>
       </div>
       <button class="btn btn-primary" onclick="saveSettings()">Save Settings</button>
@@ -554,14 +576,18 @@ async function loadOrders() {
   try {
     allOrders = await api('/api/orders?all=true');
     document.getElementById('ordersTable').innerHTML = allOrders.length === 0
-      ? '<tr><td colspan="7" style="text-align:center;color:var(--text-muted);padding:30px">No orders</td></tr>'
-      : allOrders.map(o => `<tr>
+      ? '<tr><td colspan="8" style="text-align:center;color:var(--text-muted);padding:30px">No orders</td></tr>'
+      : allOrders.map(o => {
+          const payLabel = o.payment_method === 'btc' ? '₿ BTC' : o.payment_method === 'xmr' ? 'ɱ XMR' : o.payment_method === 'cash' ? '💵 Cash' : o.payment_method || '—';
+          const delLabel = o.delivery_type === 'delivery' ? '🚗 ' + (o.delivery_borough || 'NYC') : '📦 Ship';
+          return `<tr>
           <td>#${o.id}</td>
-          <td>${esc(o.customer_name || 'N/A')}</td>
-          <td style="color:var(--text-dim)">${esc(o.customer_email || '')}</td>
+          <td>${esc(o.customer_name || 'N/A')}<br><span style="font-size:.75rem;color:var(--text-muted)">${esc(o.customer_email || '')}</span></td>
           <td style="color:var(--green);font-weight:600">$${parseFloat(o.total).toFixed(2)}</td>
+          <td style="font-size:.82rem">${payLabel}</td>
+          <td style="font-size:.82rem">${delLabel}</td>
           <td><span class="status-badge status-${o.status}">${o.status}</span></td>
-          <td style="color:var(--text-dim)">${new Date(o.created_at).toLocaleDateString()}</td>
+          <td style="color:var(--text-dim);font-size:.82rem">${new Date(o.created_at).toLocaleDateString()}</td>
           <td>
             <select onchange="updateOrderStatus(${o.id}, this.value)" style="padding:6px 10px;font-size:.8rem;width:auto">
               <option ${o.status==='pending'?'selected':''}>pending</option>
@@ -570,7 +596,8 @@ async function loadOrders() {
               <option ${o.status==='cancelled'?'selected':''}>cancelled</option>
             </select>
           </td>
-        </tr>`).join('');
+        </tr>`;
+        }).join('');
   } catch (err) { console.error(err); }
 }
 
@@ -670,6 +697,12 @@ async function loadSettings() {
     document.getElementById('setFreeShip').value = s.free_shipping_threshold || '75';
     document.getElementById('setTax').value = s.tax_rate || '0';
     document.getElementById('setAgeVerify').value = s.age_verification || 'true';
+    document.getElementById('setWalletBtc').value = s.wallet_btc || '';
+    document.getElementById('setWalletXmr').value = s.wallet_xmr || '';
+    document.getElementById('setCryptoEnabled').value = s.payment_crypto_enabled || 'true';
+    document.getElementById('setCashEnabled').value = s.payment_cash_enabled || 'true';
+    document.getElementById('setDeliveryEnabled').value = s.delivery_enabled || 'true';
+    document.getElementById('setDeliveryBoroughs').value = s.delivery_boroughs || 'Manhattan,Brooklyn,Queens,Bronx,Staten Island';
   } catch (err) { console.error(err); }
 }
 
@@ -683,7 +716,13 @@ async function saveSettings() {
       shipping_flat_rate: document.getElementById('setShipping').value,
       free_shipping_threshold: document.getElementById('setFreeShip').value,
       tax_rate: document.getElementById('setTax').value,
-      age_verification: document.getElementById('setAgeVerify').value
+      age_verification: document.getElementById('setAgeVerify').value,
+      wallet_btc: document.getElementById('setWalletBtc').value,
+      wallet_xmr: document.getElementById('setWalletXmr').value,
+      payment_crypto_enabled: document.getElementById('setCryptoEnabled').value,
+      payment_cash_enabled: document.getElementById('setCashEnabled').value,
+      delivery_enabled: document.getElementById('setDeliveryEnabled').value,
+      delivery_boroughs: document.getElementById('setDeliveryBoroughs').value
     })});
     toast('Settings saved!');
   } catch (err) { toast('Error: ' + err.message, true); }

@@ -22,8 +22,12 @@ function verifyPassword(password, stored) {
   return hash === verify;
 }
 
+function generateUserId(id) {
+  return 'AW-' + id.toString().padStart(4, '0') + crypto.randomBytes(2).toString('hex').toUpperCase();
+}
+
 function generateToken(user) {
-  const payload = { id: user.id, email: user.email, role: user.role, name: user.name };
+  const payload = { id: user.id, email: user.email, role: user.role, name: user.name, user_id: user.user_id };
   const data = Buffer.from(JSON.stringify(payload)).toString('base64url');
   const sig = crypto.createHmac('sha256', process.env.JWT_SECRET || 'airwaves-secret-key-2024').update(data).digest('base64url');
   return data + '.' + sig;
@@ -59,12 +63,16 @@ export default async (req, context) => {
       }
       const passwordHash = hashPassword(password);
       const [user] = await sql`
-        INSERT INTO users (email, password_hash, name, role) 
-        VALUES (${email.toLowerCase()}, ${passwordHash}, ${name}, 'customer') 
+        INSERT INTO users (email, password_hash, name, role)
+        VALUES (${email.toLowerCase()}, ${passwordHash}, ${name}, 'customer')
         RETURNING id, email, name, role
       `;
+      // Generate and assign unique user_id
+      const userId = generateUserId(user.id);
+      await sql`UPDATE users SET user_id = ${userId} WHERE id = ${user.id}`;
+      user.user_id = userId;
       const token = generateToken(user);
-      return new Response(JSON.stringify({ success: true, token, user: { id: user.id, email: user.email, name: user.name, role: user.role } }), { status: 201, headers });
+      return new Response(JSON.stringify({ success: true, token, user: { id: user.id, user_id: userId, email: user.email, name: user.name, role: user.role } }), { status: 201, headers });
     }
 
     if (req.method === 'POST' && action === 'login') {
@@ -77,7 +85,10 @@ export default async (req, context) => {
         return new Response(JSON.stringify({ error: 'Invalid email or password' }), { status: 401, headers });
       }
       const token = generateToken(user);
-      return new Response(JSON.stringify({ success: true, token, user: { id: user.id, email: user.email, name: user.name, role: user.role } }), { status: 200, headers });
+      return new Response(JSON.stringify({ success: true, token, user: {
+        id: user.id, user_id: user.user_id, email: user.email, name: user.name, role: user.role,
+        phone: user.phone, shipping_address: user.shipping_address, city: user.city, state: user.state, zip_code: user.zip_code
+      } }), { status: 200, headers });
     }
 
     if (req.method === 'GET' && action === 'me') {
@@ -86,7 +97,10 @@ export default async (req, context) => {
       const token = authHeader.replace('Bearer ', '');
       const payload = verifyToken(token);
       if (!payload) return new Response(JSON.stringify({ error: 'Invalid token' }), { status: 401, headers });
-      return new Response(JSON.stringify({ user: payload }), { status: 200, headers });
+      // Fetch full profile from DB
+      const [user] = await sql`SELECT id, user_id, email, name, role, phone, shipping_address, city, state, zip_code, created_at FROM users WHERE id = ${payload.id}`;
+      if (!user) return new Response(JSON.stringify({ error: 'User not found' }), { status: 404, headers });
+      return new Response(JSON.stringify({ user }), { status: 200, headers });
     }
 
     return new Response(JSON.stringify({ error: 'Invalid action. Use ?action=login, ?action=register, or ?action=me' }), { status: 400, headers });

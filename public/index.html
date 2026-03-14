@@ -55,10 +55,17 @@ nav button{background:transparent;color:var(--text-dim);padding:8px 14px;border-
 nav button:hover,nav button.active{color:var(--green);background:rgba(57,255,20,.08)}
 .cart-badge{position:absolute;top:2px;right:2px;background:var(--green);color:#000;font-size:.65rem;font-weight:700;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center}
 .user-menu{position:relative}
-.user-dropdown{position:absolute;top:100%;right:0;background:var(--surface);border:1px solid var(--surface3);border-radius:var(--radius);padding:8px;min-width:180px;display:none;box-shadow:0 10px 40px rgba(0,0,0,.5)}
+.user-area{display:flex;align-items:center;gap:10px;cursor:pointer;padding:6px 12px;border-radius:var(--radius);transition:background .2s}
+.user-area:hover{background:rgba(57,255,20,.06)}
+.user-avatar{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--green),var(--purple));display:flex;align-items:center;justify-content:center;font-family:'Archivo Black',sans-serif;font-size:.75rem;color:#000;flex-shrink:0;transition:box-shadow .2s}
+.user-area:hover .user-avatar{box-shadow:0 0 12px rgba(57,255,20,.35)}
+.user-greeting{font-size:.85rem;font-weight:500;color:var(--text);line-height:1.2}
+.user-greeting small{display:block;font-size:.72rem;color:var(--text-muted);font-weight:400}
+.user-dropdown{position:absolute;top:100%;right:0;background:var(--surface);border:1px solid var(--surface3);border-radius:var(--radius);padding:8px;min-width:200px;display:none;box-shadow:0 10px 40px rgba(0,0,0,.5);margin-top:4px}
 .user-dropdown.show{display:block}
-.user-dropdown button{width:100%;text-align:left;padding:10px 14px;border-radius:var(--radius-sm);background:transparent;color:var(--text);font-size:.85rem;transition:background .2s}
+.user-dropdown button{width:100%;text-align:left;padding:10px 14px;border-radius:var(--radius-sm);background:transparent;color:var(--text);font-size:.85rem;transition:background .2s;display:flex;align-items:center;gap:8px}
 .user-dropdown button:hover{background:var(--surface2)}
+.user-dropdown .divider{height:1px;background:var(--surface3);margin:4px 0}
 
 /* Hero */
 .hero{padding:80px 24px 60px;text-align:center;position:relative;overflow:hidden}
@@ -172,6 +179,34 @@ main{max-width:1200px;margin:0 auto;padding:0 24px 80px}
 .checkout-view .order-summary h4{font-weight:700;margin-bottom:12px}
 .checkout-view .summary-item{display:flex;justify-content:space-between;font-size:.88rem;margin-bottom:6px;color:var(--text-dim)}
 .checkout-view .summary-total{display:flex;justify-content:space-between;font-family:'Archivo Black',sans-serif;font-size:1.1rem;color:var(--green);padding-top:10px;margin-top:10px;border-top:1px solid var(--surface3)}
+/* Payment Options */
+.payment-options{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap}
+.payment-option{flex:1;min-width:120px;background:var(--surface);border:2px solid var(--surface3);border-radius:var(--radius);padding:16px;text-align:center;cursor:pointer;transition:all .2s}
+.payment-option:hover{border-color:var(--text-muted)}
+.payment-option.selected{border-color:var(--green);background:rgba(57,255,20,.05)}
+.payment-option .pay-icon{font-size:1.5rem;margin-bottom:6px}
+.payment-option .pay-name{font-weight:700;font-size:.85rem}
+.payment-option .pay-desc{font-size:.72rem;color:var(--text-muted);margin-top:2px}
+
+/* Delivery Options */
+.delivery-options{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap}
+.delivery-option{flex:1;min-width:140px;background:var(--surface);border:2px solid var(--surface3);border-radius:var(--radius);padding:14px;text-align:center;cursor:pointer;transition:all .2s}
+.delivery-option:hover{border-color:var(--text-muted)}
+.delivery-option.selected{border-color:var(--green);background:rgba(57,255,20,.05)}
+.delivery-option .del-name{font-weight:700;font-size:.88rem}
+.delivery-option .del-desc{font-size:.75rem;color:var(--text-muted);margin-top:2px}
+.delivery-option .del-price{color:var(--green);font-weight:700;font-size:.82rem;margin-top:4px}
+
+/* QR Code */
+.qr-section{background:var(--surface);border:1px solid var(--surface2);border-radius:var(--radius);padding:24px;margin-bottom:20px;text-align:center}
+.qr-section h4{font-weight:700;margin-bottom:4px}
+.qr-section .qr-subtitle{color:var(--text-muted);font-size:.82rem;margin-bottom:16px}
+.qr-canvas{background:#fff;border-radius:var(--radius-sm);display:inline-block;padding:12px;margin-bottom:12px}
+.wallet-address{background:var(--surface2);border:1px solid var(--surface3);border-radius:var(--radius-sm);padding:10px 14px;font-family:monospace;font-size:.75rem;color:var(--text-dim);word-break:break-all;cursor:pointer;transition:border-color .2s;position:relative}
+.wallet-address:hover{border-color:var(--green)}
+.wallet-address::after{content:'Click to copy';position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:.68rem;color:var(--text-muted);font-family:'DM Sans',sans-serif}
+.crypto-amount{color:var(--green);font-family:'Archivo Black',sans-serif;font-size:1.1rem;margin:8px 0}
+
 .order-success{text-align:center;padding:60px 20px}
 .order-success h2{color:var(--green);margin-bottom:12px}
 
@@ -235,9 +270,20 @@ footer .footer-links a:hover{color:var(--green)}
         <span class="cart-badge" id="cartBadge" style="display:none">0</span>
       </button>
       <div class="user-menu">
-        <button onclick="handleUserClick()" id="navUser">Account</button>
+        <!-- Logged out state -->
+        <button onclick="handleUserClick()" id="navUserBtn" class="nav-login-btn">Account</button>
+        <!-- Logged in state -->
+        <div class="user-area" id="navUserArea" style="display:none" onclick="handleUserClick()">
+          <div class="user-avatar" id="userAvatar"></div>
+          <div class="user-greeting">
+            <span id="userGreeting">Welcome</span>
+            <small id="userIdLabel"></small>
+          </div>
+        </div>
         <div class="user-dropdown" id="userDropdown">
-          <button onclick="showView('orders')">My Orders</button>
+          <button onclick="window.location.href='/profile.html'">👤 My Account</button>
+          <button onclick="showView('orders')">📦 My Orders</button>
+          <div class="divider"></div>
           <button onclick="logout()">Sign Out</button>
         </div>
       </div>
@@ -271,6 +317,7 @@ footer .footer-links a:hover{color:var(--green)}
       <button class="btn btn-secondary btn-sm" onclick="showView('shop')" style="margin-bottom:20px">← Back to Shop</button>
       <h2>Checkout</h2>
       <div class="order-summary" id="checkoutSummary"></div>
+
       <div class="field">
         <label>Full Name</label>
         <input type="text" id="checkName" placeholder="John Doe">
@@ -279,11 +326,82 @@ footer .footer-links a:hover{color:var(--green)}
         <label>Email</label>
         <input type="email" id="checkEmail" placeholder="your@email.com">
       </div>
+
+      <!-- Delivery Method -->
       <div class="field">
+        <label>Delivery Method</label>
+      </div>
+      <div class="delivery-options" id="deliveryOptions">
+        <div class="delivery-option selected" onclick="selectDelivery('delivery')" data-delivery="delivery">
+          <div class="del-name">NYC Delivery</div>
+          <div class="del-desc">Free to all 5 boroughs</div>
+          <div class="del-price">FREE</div>
+        </div>
+        <div class="delivery-option" onclick="selectDelivery('shipping')" data-delivery="shipping">
+          <div class="del-name">Ship Anywhere</div>
+          <div class="del-desc">Standard shipping</div>
+          <div class="del-price" id="shipPrice">$5.99</div>
+        </div>
+      </div>
+
+      <!-- Borough selector (NYC delivery) -->
+      <div class="field" id="boroughField">
+        <label>Select Borough</label>
+        <select id="checkBorough">
+          <option value="">Choose your borough...</option>
+          <option value="Manhattan">Manhattan</option>
+          <option value="Brooklyn">Brooklyn</option>
+          <option value="Queens">Queens</option>
+          <option value="Bronx">Bronx</option>
+          <option value="Staten Island">Staten Island</option>
+        </select>
+      </div>
+
+      <!-- Address (for shipping) -->
+      <div class="field" id="addressField" style="display:none">
         <label>Shipping Address</label>
         <textarea id="checkAddress" rows="3" placeholder="123 Main St, City, State ZIP"></textarea>
       </div>
-      <button class="btn btn-primary" onclick="placeOrder()" style="width:100%;justify-content:center;margin-top:8px">Place Order</button>
+
+      <!-- Delivery address for NYC -->
+      <div class="field" id="deliveryAddressField">
+        <label>Delivery Address</label>
+        <input type="text" id="checkDeliveryAddress" placeholder="123 Main St, Apt 4B">
+      </div>
+
+      <!-- Payment Method -->
+      <div class="field">
+        <label>Payment Method</label>
+      </div>
+      <div class="payment-options" id="paymentOptions">
+        <div class="payment-option" onclick="selectPayment('btc')" data-payment="btc">
+          <div class="pay-icon">₿</div>
+          <div class="pay-name">Bitcoin</div>
+          <div class="pay-desc">BTC payment</div>
+        </div>
+        <div class="payment-option" onclick="selectPayment('xmr')" data-payment="xmr">
+          <div class="pay-icon">ɱ</div>
+          <div class="pay-name">Monero</div>
+          <div class="pay-desc">XMR payment</div>
+        </div>
+        <div class="payment-option" onclick="selectPayment('cash')" data-payment="cash">
+          <div class="pay-icon">💵</div>
+          <div class="pay-name">Cash</div>
+          <div class="pay-desc">Pay on delivery</div>
+        </div>
+      </div>
+
+      <!-- Crypto QR Code (shown after order placed) -->
+      <div class="qr-section" id="cryptoQR" style="display:none">
+        <h4 id="qrTitle">Send Payment</h4>
+        <div class="qr-subtitle" id="qrSubtitle">Scan the QR code or copy the wallet address below</div>
+        <div class="crypto-amount" id="qrAmount"></div>
+        <div class="qr-canvas"><canvas id="qrCanvas"></canvas></div>
+        <div class="wallet-address" id="walletAddress" onclick="copyWallet()"></div>
+        <p style="margin-top:10px;font-size:.78rem;color:var(--text-muted)">Order will be confirmed once payment is verified</p>
+      </div>
+
+      <button class="btn btn-primary" id="placeOrderBtn" onclick="placeOrder()" style="width:100%;justify-content:center;margin-top:8px">Place Order</button>
     </div>
   </div>
 
@@ -413,6 +531,9 @@ let selectedCategory = 'all';
 let authMode = 'login';
 let modalQty = 1;
 let dbInitialized = false;
+let storeSettings = {};
+let selectedPayment = null;
+let selectedDelivery = 'delivery';
 
 // ============ API ============
 async function api(path, options = {}) {
@@ -451,6 +572,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     } catch { authToken = null; localStorage.removeItem('aw_token'); }
   }
   // Load data
+  try { storeSettings = await api('/api/settings'); } catch {}
   await loadProducts();
   await loadCart();
 });
@@ -677,33 +799,203 @@ function toggleCart() {
 // ============ CHECKOUT ============
 function goToCheckout() {
   toggleCart();
+  selectedPayment = null;
+  selectedDelivery = 'delivery';
+  document.getElementById('cryptoQR').style.display = 'none';
+  document.getElementById('placeOrderBtn').style.display = '';
+
+  // Reset payment/delivery selections
+  document.querySelectorAll('.payment-option').forEach(o => o.classList.remove('selected'));
+  document.querySelectorAll('.delivery-option').forEach(o => o.classList.remove('selected'));
+  document.querySelector('[data-delivery="delivery"]')?.classList.add('selected');
+  updateDeliveryUI();
+
+  const subtotal = parseFloat(cart.total);
+  const shipping = selectedDelivery === 'delivery' ? 0 : (subtotal >= 75 ? 0 : 5.99);
+  const total = subtotal + shipping;
+
   const summary = document.getElementById('checkoutSummary');
   summary.innerHTML = `
     <h4>Order Summary</h4>
     ${cart.items.map(i => `<div class="summary-item"><span>${esc(i.name)} × ${i.quantity}</span><span>$${(parseFloat(i.price)*i.quantity).toFixed(2)}</span></div>`).join('')}
-    <div class="summary-total"><span>Total</span><span>$${(parseFloat(cart.total) + (parseFloat(cart.total) >= 75 ? 0 : 5.99)).toFixed(2)}</span></div>
+    <div class="summary-item"><span>Delivery</span><span>${shipping === 0 ? 'Free' : '$' + shipping.toFixed(2)}</span></div>
+    <div class="summary-total"><span>Total</span><span>$${total.toFixed(2)}</span></div>
   `;
   if (currentUser) {
     document.getElementById('checkName').value = currentUser.name || '';
     document.getElementById('checkEmail').value = currentUser.email || '';
+    if (currentUser.shipping_address) {
+      document.getElementById('checkDeliveryAddress').value = currentUser.shipping_address || '';
+      const parts = [currentUser.shipping_address, currentUser.city, currentUser.state, currentUser.zip_code].filter(Boolean);
+      document.getElementById('checkAddress').value = parts.join(', ');
+    }
   }
   showView('checkout');
+}
+
+function selectDelivery(type) {
+  selectedDelivery = type;
+  document.querySelectorAll('.delivery-option').forEach(o => o.classList.remove('selected'));
+  document.querySelector(`[data-delivery="${type}"]`)?.classList.add('selected');
+  updateDeliveryUI();
+  updateCheckoutTotal();
+}
+
+function updateDeliveryUI() {
+  const isNYC = selectedDelivery === 'delivery';
+  document.getElementById('boroughField').style.display = isNYC ? '' : 'none';
+  document.getElementById('deliveryAddressField').style.display = isNYC ? '' : 'none';
+  document.getElementById('addressField').style.display = isNYC ? 'none' : '';
+}
+
+function selectPayment(method) {
+  selectedPayment = method;
+  document.querySelectorAll('.payment-option').forEach(o => o.classList.remove('selected'));
+  document.querySelector(`[data-payment="${method}"]`)?.classList.add('selected');
+}
+
+function updateCheckoutTotal() {
+  const subtotal = parseFloat(cart.total);
+  const shipping = selectedDelivery === 'delivery' ? 0 : (subtotal >= 75 ? 0 : parseFloat(storeSettings.shipping_flat_rate || '5.99'));
+  const total = subtotal + shipping;
+  const summary = document.getElementById('checkoutSummary');
+  summary.innerHTML = `
+    <h4>Order Summary</h4>
+    ${cart.items.map(i => `<div class="summary-item"><span>${esc(i.name)} × ${i.quantity}</span><span>$${(parseFloat(i.price)*i.quantity).toFixed(2)}</span></div>`).join('')}
+    <div class="summary-item"><span>${selectedDelivery === 'delivery' ? 'NYC Delivery' : 'Shipping'}</span><span>${shipping === 0 ? 'Free' : '$' + shipping.toFixed(2)}</span></div>
+    <div class="summary-total"><span>Total</span><span>$${total.toFixed(2)}</span></div>
+  `;
+}
+
+function getOrderTotal() {
+  const subtotal = parseFloat(cart.total);
+  const shipping = selectedDelivery === 'delivery' ? 0 : (subtotal >= 75 ? 0 : parseFloat(storeSettings.shipping_flat_rate || '5.99'));
+  return subtotal + shipping;
 }
 
 async function placeOrder() {
   const name = document.getElementById('checkName').value.trim();
   const email = document.getElementById('checkEmail').value.trim();
-  const address = document.getElementById('checkAddress').value.trim();
-  if (!name || !email || !address) { toast('Please fill in all fields', true); return; }
+  if (!name || !email) { toast('Please fill in name and email', true); return; }
+  if (!selectedPayment) { toast('Please select a payment method', true); return; }
+
+  let address = '';
+  let borough = '';
+  if (selectedDelivery === 'delivery') {
+    borough = document.getElementById('checkBorough').value;
+    address = document.getElementById('checkDeliveryAddress').value.trim();
+    if (!borough) { toast('Please select your borough', true); return; }
+    if (!address) { toast('Please enter your delivery address', true); return; }
+    address = address + ', ' + borough + ', NY';
+  } else {
+    address = document.getElementById('checkAddress').value.trim();
+    if (!address) { toast('Please enter your shipping address', true); return; }
+  }
+
+  const btn = document.getElementById('placeOrderBtn');
+  btn.disabled = true;
+  btn.textContent = 'Processing...';
+
   try {
-    await api('/api/orders', { method: 'POST', body: JSON.stringify({ customer_name: name, customer_email: email, shipping_address: address }) });
+    const result = await api('/api/orders', { method: 'POST', body: JSON.stringify({
+      customer_name: name,
+      customer_email: email,
+      shipping_address: address,
+      payment_method: selectedPayment,
+      delivery_type: selectedDelivery,
+      delivery_borough: borough
+    })});
+
     await loadCart();
-    showView('success');
-    toast('Order placed successfully!');
-  } catch (err) { toast('Error placing order: ' + err.message, true); }
+
+    if (selectedPayment === 'btc' || selectedPayment === 'xmr') {
+      // Show QR code for crypto payment
+      showCryptoQR(selectedPayment, getOrderTotal(), result.order.id);
+      btn.style.display = 'none';
+    } else {
+      // Cash — go to success
+      showView('success');
+      toast('Order placed! Pay cash on delivery.');
+    }
+  } catch (err) {
+    toast('Error placing order: ' + err.message, true);
+    btn.disabled = false;
+    btn.textContent = 'Place Order';
+  }
+}
+
+function showCryptoQR(method, total, orderId) {
+  const qrSection = document.getElementById('cryptoQR');
+  const walletKey = method === 'btc' ? 'wallet_btc' : 'wallet_xmr';
+  const walletAddr = storeSettings[walletKey] || '';
+  const coinName = method === 'btc' ? 'Bitcoin (BTC)' : 'Monero (XMR)';
+  const coinSymbol = method === 'btc' ? 'BTC' : 'XMR';
+
+  document.getElementById('qrTitle').textContent = 'Send ' + coinName;
+  document.getElementById('qrSubtitle').textContent = 'Order #' + orderId + ' — Scan QR or copy address below';
+  document.getElementById('qrAmount').textContent = '$' + total.toFixed(2) + ' USD in ' + coinSymbol;
+  document.getElementById('walletAddress').textContent = walletAddr || 'Wallet address not configured — contact store';
+
+  // Generate QR code
+  if (walletAddr) {
+    const uri = method === 'btc' ? 'bitcoin:' + walletAddr : 'monero:' + walletAddr;
+    generateQR(uri);
+  }
+
+  qrSection.style.display = '';
+  qrSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  toast('Order placed! Complete your crypto payment.');
+}
+
+function copyWallet() {
+  const addr = document.getElementById('walletAddress').textContent;
+  if (!addr || addr.includes('not configured')) return;
+  navigator.clipboard.writeText(addr).then(() => toast('Wallet address copied!')).catch(() => {});
+}
+
+// Simple QR Code generator using canvas (QR encoding)
+function generateQR(data) {
+  const canvas = document.getElementById('qrCanvas');
+  const size = 200;
+  canvas.width = size;
+  canvas.height = size;
+  const ctx = canvas.getContext('2d');
+  // Use a QR code library loaded from CDN, or fallback to a placeholder
+  if (typeof QRCode !== 'undefined') {
+    QRCode.toCanvas(canvas, data, { width: size, margin: 0, color: { dark: '#000', light: '#fff' } });
+  } else {
+    // Fallback: show text-based placeholder
+    ctx.fillStyle = '#fff';
+    ctx.fillRect(0, 0, size, size);
+    ctx.fillStyle = '#000';
+    ctx.font = '11px monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText('QR Code', size/2, size/2 - 10);
+    ctx.font = '9px monospace';
+    ctx.fillText('Loading...', size/2, size/2 + 10);
+    // Dynamically load qrcode library
+    const script = document.createElement('script');
+    script.src = 'https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js';
+    script.onload = () => {
+      QRCode.toCanvas(canvas, data, { width: size, margin: 0, color: { dark: '#000', light: '#fff' } });
+    };
+    document.head.appendChild(script);
+  }
 }
 
 // ============ AUTH ============
+function getInitials(name) {
+  if (!name) return '?';
+  const parts = name.trim().split(/\s+/);
+  if (parts.length >= 2) return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+  return parts[0][0].toUpperCase();
+}
+
+function getFirstName(name) {
+  if (!name) return '';
+  return name.trim().split(/\s+/)[0];
+}
+
 function handleUserClick() {
   if (currentUser) {
     document.getElementById('userDropdown').classList.toggle('show');
@@ -790,13 +1082,17 @@ function logout() {
 }
 
 function updateUserUI() {
-  const btn = document.getElementById('navUser');
+  const loginBtn = document.getElementById('navUserBtn');
+  const userArea = document.getElementById('navUserArea');
   if (currentUser) {
-    btn.textContent = currentUser.name.split(' ')[0];
-    btn.style.color = 'var(--green)';
+    loginBtn.style.display = 'none';
+    userArea.style.display = 'flex';
+    document.getElementById('userAvatar').textContent = getInitials(currentUser.name);
+    document.getElementById('userGreeting').textContent = 'Welcome, ' + getFirstName(currentUser.name);
+    document.getElementById('userIdLabel').textContent = currentUser.user_id || '';
   } else {
-    btn.textContent = 'Account';
-    btn.style.color = '';
+    loginBtn.style.display = '';
+    userArea.style.display = 'none';
   }
 }
 
