@@ -17,7 +17,8 @@ export default async (req, context) => {
   try {
     // GET - fetch all settings as key-value object
     if (req.method === 'GET') {
-      const rows = await sql`SELECT key, value FROM settings`;
+      const sensitiveKeys = ['DATABASE_URL', 'NETLIFY_DATABASE_URL', 'NETLIFY_DATABASE_URL_UNPOOLED', 'JWT_SECRET', 'ANTHROPIC_API_KEY'];
+      const rows = await sql`SELECT key, value FROM settings WHERE key NOT LIKE 'wallet_%' AND key NOT IN ('DATABASE_URL', 'NETLIFY_DATABASE_URL', 'NETLIFY_DATABASE_URL_UNPOOLED', 'JWT_SECRET', 'ANTHROPIC_API_KEY')`;
       const settings = {};
       rows.forEach(row => { settings[row.key] = row.value; });
       return new Response(JSON.stringify(settings), { status: 200, headers });

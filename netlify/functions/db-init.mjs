@@ -85,6 +85,25 @@ export default async (req, context) => {
       )
     `;
 
+    // Clean up stale/sensitive data from previous versions
+    await sql`DELETE FROM settings WHERE key LIKE 'wallet_%' OR key IN ('DATABASE_URL', 'NETLIFY_DATABASE_URL', 'NETLIFY_DATABASE_URL_UNPOOLED')`;
+
+    // Remove duplicate products, keeping only the lowest ID for each name
+    await sql`
+      DELETE FROM products WHERE id NOT IN (
+        SELECT MIN(id) FROM products GROUP BY name
+      )
+    `;
+
+    // Add missing columns if table already existed from older version
+    await sql`ALTER TABLE products ADD COLUMN IF NOT EXISTS active BOOLEAN DEFAULT true`;
+    await sql`ALTER TABLE products ADD COLUMN IF NOT EXISTS featured BOOLEAN DEFAULT false`;
+    await sql`ALTER TABLE products ADD COLUMN IF NOT EXISTS strain_type VARCHAR(50)`;
+    await sql`ALTER TABLE products ADD COLUMN IF NOT EXISTS thc_content VARCHAR(20)`;
+    await sql`ALTER TABLE products ADD COLUMN IF NOT EXISTS cbd_content VARCHAR(20)`;
+    await sql`ALTER TABLE products ADD COLUMN IF NOT EXISTS weight VARCHAR(50)`;
+    await sql`ALTER TABLE products ADD COLUMN IF NOT EXISTS image_url TEXT DEFAULT ''`;
+
     // Insert default settings if none exist
     const existingSettings = await sql`SELECT COUNT(*) as count FROM settings`;
     if (parseInt(existingSettings[0].count) === 0) {
