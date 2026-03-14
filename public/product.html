@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AIRWAVES — Product</title>
+<link rel="icon" type="image/jpeg" href="/images/logo.jpg">
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0a0a12;--surface:#12121e;--surface2:#1a1a2e;--surface3:#22223a;
+  --green:#39ff14;--green-dim:#2bcc10;--purple:#8b5cf6;
+  --blue:#06b6d4;--text:#e8e8f0;--text-dim:#9898a8;--text-muted:#58586a;
+  --danger:#ef4444;--warning:#f59e0b;--success:#22c55e;
+  --radius:12px;--radius-sm:8px;
+}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);line-height:1.6;min-height:100vh}
+a{color:var(--green);text-decoration:none}
+button{cursor:pointer;font-family:inherit;border:none;outline:none}
+
+header{position:sticky;top:0;z-index:100;background:rgba(10,10,18,.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--surface3);padding:0 24px}
+.header-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:68px}
+.logo-area{display:flex;align-items:center;gap:12px;cursor:pointer;text-decoration:none}
+.logo-area img{width:42px;height:42px;border-radius:50%;object-fit:cover}
+.logo-area span{font-family:'Archivo Black',sans-serif;font-size:1.3rem;background:linear-gradient(135deg,var(--green),var(--blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.back-btn{background:transparent;color:var(--text-dim);padding:8px 14px;border-radius:var(--radius-sm);font-size:.88rem;font-weight:500;transition:all .2s;border:1px solid var(--surface3)}
+.back-btn:hover{color:var(--green);border-color:var(--green)}
+
+.page{max-width:1100px;margin:0 auto;padding:48px 24px 80px}
+.breadcrumb{font-size:.82rem;color:var(--text-muted);margin-bottom:32px;display:flex;align-items:center;gap:8px}
+.breadcrumb a{color:var(--text-dim);transition:color .2s}
+.breadcrumb a:hover{color:var(--green)}
+.breadcrumb span{color:var(--text-muted)}
+
+.product-layout{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start}
+@media(max-width:768px){.product-layout{grid-template-columns:1fr;gap:28px}}
+
+.product-image-wrap{background:var(--surface);border:1px solid var(--surface2);border-radius:var(--radius);overflow:hidden;aspect-ratio:1;display:flex;align-items:center;justify-content:center;position:relative}
+.product-image-wrap img{width:100%;height:100%;object-fit:cover}
+.product-image-wrap .no-img{font-size:6rem;opacity:.1}
+.featured-badge{position:absolute;top:16px;left:16px;background:var(--green);color:#000;font-size:.72rem;font-weight:700;padding:5px 12px;border-radius:50px;text-transform:uppercase;letter-spacing:.05em}
+
+.product-info{}
+.product-category{color:var(--purple);font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px}
+.product-name{font-family:'Archivo Black',sans-serif;font-size:clamp(1.5rem,3vw,2.2rem);line-height:1.15;margin-bottom:12px}
+.product-price{font-family:'Archivo Black',sans-serif;font-size:2rem;color:var(--green);margin-bottom:20px}
+.product-description{color:var(--text-dim);font-size:.97rem;line-height:1.75;margin-bottom:28px}
+
+.specs-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:28px}
+.spec-item{background:var(--surface);border:1px solid var(--surface2);border-radius:var(--radius-sm);padding:12px 16px}
+.spec-item label{display:block;font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted);margin-bottom:3px}
+.spec-item span{font-weight:700;font-size:.92rem;color:var(--text)}
+
+.stock-status{display:inline-flex;align-items:center;gap:6px;font-size:.85rem;font-weight:600;margin-bottom:20px}
+.stock-dot{width:8px;height:8px;border-radius:50%}
+
+.qty-row{display:flex;align-items:center;gap:16px;margin-bottom:20px}
+.qty-ctrl{display:flex;align-items:center;background:var(--surface2);border:1px solid var(--surface3);border-radius:var(--radius-sm);overflow:hidden}
+.qty-ctrl button{width:44px;height:44px;background:transparent;color:var(--text);font-size:1.3rem;font-weight:700;transition:background .2s}
+.qty-ctrl button:hover{background:var(--surface3)}
+.qty-ctrl span{width:44px;text-align:center;font-weight:700;font-size:1rem}
+
+.btn{padding:14px 28px;border-radius:var(--radius);font-weight:700;font-size:.95rem;transition:all .25s;display:inline-flex;align-items:center;gap:8px;letter-spacing:.02em}
+.btn-primary{background:var(--green);color:#000}
+.btn-primary:hover{background:var(--green-dim);transform:translateY(-1px);box-shadow:0 4px 20px rgba(57,255,20,.3)}
+.btn-primary:disabled{opacity:.4;cursor:not-allowed;transform:none;box-shadow:none}
+.btn-outline{background:transparent;border:2px solid var(--surface3);color:var(--text-dim)}
+.btn-outline:hover{border-color:var(--green);color:var(--green)}
+
+.related-section{margin-top:72px}
+.related-section h2{font-family:'Archivo Black',sans-serif;font-size:1.4rem;margin-bottom:24px}
+.related-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px}
+.related-card{background:var(--surface);border:1px solid var(--surface2);border-radius:var(--radius);overflow:hidden;cursor:pointer;transition:all .3s}
+.related-card:hover{border-color:var(--surface3);transform:translateY(-3px);box-shadow:0 8px 30px rgba(0,0,0,.3)}
+.related-card-img{aspect-ratio:1;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:2.5rem;opacity:.15}
+.related-card-img img{width:100%;height:100%;object-fit:cover;opacity:1}
+.related-card-info{padding:14px}
+.related-card-info h4{font-size:.9rem;font-weight:700;margin-bottom:4px}
+.related-card-info .price{color:var(--green);font-weight:700;font-size:.95rem}
+
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--green);color:#000;padding:12px 24px;border-radius:var(--radius);font-weight:700;font-size:.88rem;z-index:999;transition:transform .3s;box-shadow:0 8px 30px rgba(57,255,20,.3)}
+.toast.show{transform:translateX(-50%) translateY(0)}
+
+.spinner{width:36px;height:36px;border:3px solid var(--surface3);border-top-color:var(--green);border-radius:50%;animation:spin .7s linear infinite;margin:80px auto}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+footer{background:var(--surface);border-top:1px solid var(--surface2);padding:32px 24px;text-align:center}
+footer .brand{font-family:'Archivo Black',sans-serif;font-size:1rem;color:var(--green);margin-bottom:6px}
+footer p{color:var(--text-muted);font-size:.8rem}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <a class="logo-area" href="/">
+      <img src="/images/logo.jpg" alt="AIRWAVES">
+      <span>AIRWAVES</span>
+    </a>
+    <button class="back-btn" onclick="history.back()">← Back to Shop</button>
+  </div>
+</header>
+
+<div class="page" id="pageContent">
+  <div class="spinner" id="spinner"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<footer>
+  <div class="brand">((( AIRWAVES )))</div>
+  <p>Premium hemp products, lab-tested for quality and compliance.</p>
+  <p style="margin-top:4px">All products contain less than 0.3% THC. &copy; 2026 AIRWAVES v4.1</p>
+</footer>
+
+<script>
+let product = null;
+let qty = 1;
+let sessionId = localStorage.getItem('aw_session') || ('s_' + Math.random().toString(36).substr(2,12));
+localStorage.setItem('aw_session', sessionId);
+let authToken = localStorage.getItem('aw_token');
+
+async function api(path, options = {}) {
+  const opts = { headers: { 'Content-Type': 'application/json' }, ...options };
+  if (authToken) opts.headers['Authorization'] = 'Bearer ' + authToken;
+  const sep = path.includes('?') ? '&' : '?';
+  const url = path + sep + 'session=' + sessionId;
+  const res = await fetch(url, opts);
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || 'Request failed');
+  return data;
+}
+
+async function init() {
+  const params = new URLSearchParams(window.location.search);
+  const id = params.get('id');
+  if (!id) { showError('No product specified.'); return; }
+
+  try {
+    product = await fetch('/api/products?id=' + id + '&session=' + sessionId).then(r => r.json());
+    if (product.error) { showError('Product not found.'); return; }
+    document.title = 'AIRWAVES — ' + product.name;
+    renderProduct();
+    loadRelated();
+  } catch {
+    showError('Failed to load product. Please try again.');
+  }
+}
+
+function renderProduct() {
+  const spinner = document.getElementById('spinner');
+  spinner.style.display = 'none';
+
+  const stockColor = product.stock > 10 ? 'var(--success)' : product.stock > 0 ? 'var(--warning)' : 'var(--danger)';
+  const stockText = product.stock > 10 ? 'In Stock' : product.stock > 0 ? `Only ${product.stock} left` : 'Out of Stock';
+  const outOfStock = product.stock === 0;
+
+  const specs = [];
+  if (product.strain_type && product.strain_type !== 'N/A') specs.push({ label: 'Type', val: product.strain_type });
+  if (product.thc_content) specs.push({ label: 'THC', val: product.thc_content });
+  if (product.cbd_content) specs.push({ label: 'CBD', val: product.cbd_content });
+  if (product.weight) specs.push({ label: 'Weight / Size', val: product.weight });
+
+  document.getElementById('pageContent').innerHTML = `
+    <div class="breadcrumb">
+      <a href="/">Shop</a>
+      <span>›</span>
+      <span>${esc(product.category || 'Products')}</span>
+      <span>›</span>
+      <span>${esc(product.name)}</span>
+    </div>
+
+    <div class="product-layout">
+      <div class="product-image-wrap">
+        ${product.image_url ? `<img src="${esc(product.image_url)}" alt="${esc(product.name)}">` : '<div class="no-img">🌿</div>'}
+        ${product.featured ? '<div class="featured-badge">Featured</div>' : ''}
+      </div>
+
+      <div class="product-info">
+        <div class="product-category">${esc(product.category || '')}</div>
+        <h1 class="product-name">${esc(product.name)}</h1>
+        <div class="product-price">$${parseFloat(product.price).toFixed(2)}</div>
+
+        ${product.description ? `<p class="product-description">${esc(product.description)}</p>` : ''}
+
+        ${specs.length > 0 ? `
+        <div class="specs-grid">
+          ${specs.map(s => `<div class="spec-item"><label>${s.label}</label><span>${esc(s.val)}</span></div>`).join('')}
+        </div>` : ''}
+
+        <div class="stock-status">
+          <div class="stock-dot" style="background:${stockColor}"></div>
+          <span style="color:${stockColor}">${stockText}</span>
+        </div>
+
+        <div class="qty-row">
+          <div class="qty-ctrl">
+            <button onclick="changeQty(-1)">−</button>
+            <span id="qtyDisplay">1</span>
+            <button onclick="changeQty(1)">+</button>
+          </div>
+          <span style="color:var(--text-muted);font-size:.88rem">× $${parseFloat(product.price).toFixed(2)} each</span>
+        </div>
+
+        <div style="display:flex;gap:12px;flex-wrap:wrap">
+          <button class="btn btn-primary" id="addCartBtn" onclick="addToCart()" ${outOfStock ? 'disabled' : ''}>
+            ${outOfStock ? 'Out of Stock' : 'Add to Cart — $' + parseFloat(product.price).toFixed(2)}
+          </button>
+          <button class="btn btn-outline" onclick="window.location.href='/'">Continue Shopping</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="related-section" id="relatedSection"></div>
+  `;
+}
+
+function changeQty(delta) {
+  qty = Math.max(1, qty + delta);
+  document.getElementById('qtyDisplay').textContent = qty;
+  const btn = document.getElementById('addCartBtn');
+  if (btn && product) btn.textContent = 'Add to Cart — $' + (parseFloat(product.price) * qty).toFixed(2);
+}
+
+async function addToCart() {
+  const btn = document.getElementById('addCartBtn');
+  if (!btn) return;
+  btn.disabled = true;
+  btn.textContent = 'Adding...';
+  try {
+    await api('/api/cart', { method: 'POST', body: JSON.stringify({ product_id: product.id, quantity: qty }) });
+    toast('Added to cart!');
+    btn.textContent = 'Add to Cart — $' + (parseFloat(product.price) * qty).toFixed(2);
+  } catch (err) {
+    toast('Error adding to cart', true);
+    btn.textContent = 'Add to Cart — $' + (parseFloat(product.price) * qty).toFixed(2);
+  }
+  btn.disabled = false;
+}
+
+async function loadRelated() {
+  try {
+    const all = await fetch('/api/products?session=' + sessionId).then(r => r.json());
+    const related = all.filter(p => p.id !== product.id && p.category === product.category).slice(0, 4);
+    if (related.length === 0) return;
+    const el = document.getElementById('relatedSection');
+    if (!el) return;
+    el.innerHTML = `
+      <h2>More in ${esc(product.category)}</h2>
+      <div class="related-grid">
+        ${related.map(p => `
+          <div class="related-card" onclick="window.location.href='/product.html?id=${p.id}'">
+            <div class="related-card-img">
+              ${p.image_url ? `<img src="${esc(p.image_url)}" alt="${esc(p.name)}">` : '🌿'}
+            </div>
+            <div class="related-card-info">
+              <h4>${esc(p.name)}</h4>
+              <div class="price">$${parseFloat(p.price).toFixed(2)}</div>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    `;
+  } catch {}
+}
+
+function showError(msg) {
+  document.getElementById('pageContent').innerHTML = `
+    <div style="text-align:center;padding:80px 20px">
+      <div style="font-size:3rem;margin-bottom:16px">🌿</div>
+      <h2 style="margin-bottom:8px;font-family:'Archivo Black',sans-serif">${msg}</h2>
+      <a href="/" class="btn btn-outline" style="margin-top:20px;display:inline-flex">Back to Shop</a>
+    </div>
+  `;
+}
+
+function esc(s) { const d = document.createElement('div'); d.textContent = s || ''; return d.innerHTML; }
+
+function toast(msg, isError = false) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.style.background = isError ? 'var(--danger)' : 'var(--green)';
+  el.style.color = isError ? '#fff' : '#000';
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 3000);
+}
+
+init();
+</script>
+</body>
+</html>

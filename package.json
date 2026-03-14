@@ -1,0 +1,9 @@
+{
+  "name": "airwaves-store",
+  "version": "4.1.0",
+  "description": "AIRWAVES Hemp Products E-Commerce Store",
+  "type": "module",
+  "dependencies": {
+    "@netlify/neon": "^0.1.0"
+  }
+}
