@@ -52,9 +52,10 @@ export default async (req, context) => {
     // Create orders table
     await sql`
       CREATE TABLE IF NOT EXISTS orders (
-        id SERIAL PRIMARY KEY,
+        id VARCHAR(100) PRIMARY KEY DEFAULT gen_random_uuid()::varchar,
+        order_number VARCHAR(50) NOT NULL DEFAULT 'AW-' || LPAD(FLOOR(RANDOM() * 100000)::TEXT, 5, '0'),
         user_id INTEGER REFERENCES users(id),
-        session_id VARCHAR(255),
+        session_id VARCHAR(100),
         total DECIMAL(10,2) NOT NULL,
         status VARCHAR(50) DEFAULT 'pending',
         customer_name VARCHAR(255),
@@ -75,6 +76,7 @@ export default async (req, context) => {
         price DECIMAL(10,2) NOT NULL
       )
     `;
+
 
     // Create reviews table
     await sql`
@@ -133,6 +135,11 @@ export default async (req, context) => {
     await sql`ALTER TABLE orders ADD COLUMN IF NOT EXISTS delivery_type VARCHAR(50)`;
     await sql`ALTER TABLE orders ADD COLUMN IF NOT EXISTS delivery_borough VARCHAR(50)`;
     await sql`ALTER TABLE orders ADD COLUMN IF NOT EXISTS payment_status VARCHAR(50) DEFAULT 'pending'`;
+    await sql`ALTER TABLE orders ADD COLUMN IF NOT EXISTS session_id VARCHAR(100)`;
+    await sql`ALTER TABLE orders ADD COLUMN IF NOT EXISTS order_number VARCHAR(50)`;
+
+    // Order items migrations
+    await sql`ALTER TABLE order_items ADD COLUMN IF NOT EXISTS price DECIMAL(10,2)`;
 
     // User profile fields
     await sql`ALTER TABLE users ADD COLUMN IF NOT EXISTS user_id VARCHAR(20) UNIQUE`;

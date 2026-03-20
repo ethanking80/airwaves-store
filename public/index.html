@@ -635,7 +635,7 @@ function renderProducts() {
   }
   
   document.getElementById('productsGrid').innerHTML = filtered.map(p => `
-    <div class="product-card" onclick="window.location.href='/product.html?id='+p.id">
+    <div class="product-card" onclick="window.location.href='/product.html?id=${p.id}'">
       ${p.featured ? '<div class="badge">Featured</div>' : ''}
       <div class="product-img">
         ${p.image_url ? `<img src="${p.image_url}" alt="${esc(p.name)}">` : '<div class="placeholder-icon">🌿</div>'}
